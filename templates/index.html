@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stock Predictor</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <div class="app-wrap">
+      <header class="nav-top">
+        <div class="nav-inner container">
+          <div class="nav-brand">
+            <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 17h3l3-5 4 6 4-10 4 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div>
+              <div class="brand-title">Starry Stocks</div>
+              <div class="brand-sub">Forecasts & insights</div>
+            </div>
+          </div>
+          <div class="nav-actions">
+            <a href="#prediction" class="btn small">Make a prediction</a>
+          </div>
+        </div>
+      </header>
+
+      <main class="container layout-wide">
+        <section class="hero-card card">
+          <h1 class="hero-title">Forecast with confidence</h1>
+          <p class="hero-sub">A lightweight model trained on historical closing prices to generate short-term forecasts. Beautifully simple, responsibly used.</p>
+          <div class="hero-cta">
+            <!-- <a href="#prediction" class="btn primary">Try a prediction</a> -->
+            <!-- <a href="#" class="btn outline">Learn more</a> -->
+          </div>
+        </section>
+
+        <aside id="prediction" class="card sticky-card">
+          <h3 class="card-title">Predict future prices</h3>
+          <form method="post" action="/predict_form" class="predict-form">
+            <label class="label">Company</label>
+            <select name="company" class="input">
+              {% for c in companies %}
+                <option value="{{ c }}" {% if c == company %}selected{% endif %}>{{ c }}</option>
+              {% endfor %}
+            </select>
+
+            <label class="label">Days</label>
+            <input type="number" name="days" min="1" max="365" value="7" class="input" required />
+
+            <div class="form-actions">
+              <button type="submit" class="btn primary wide">Predict</button>
+            </div>
+          </form>
+        </aside>
+
+        <section class="card results-area">
+          {% if error %}
+            <div class="notice error">{{ error }}</div>
+          {% endif %}
+
+          {% if predictions %}
+            <div class="result-list">
+              <h3>Predicted prices for {{ company }}</h3>
+              <ul>
+                {% for p in predictions %}
+                  <li>{{ loop.index }} — <strong>{{ p }} $</strong></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% else %}
+            <p class="muted">Enter a company and the number of days to forecast. Results will appear here.</p>
+          {% endif %}
+        </section>
+      </main>
+
+      <footer class="site-foot">
+        <div class="container">© {{ year }} Starry Stocks — predictions are estimates and not financial advice.</div>
+      </footer>
+    </div>
+  </body>
+</html>
